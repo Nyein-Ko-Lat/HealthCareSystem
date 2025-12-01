@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Users</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6"><h3 class="mb-0">Patients</h3></div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="#">Patients</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Patients List</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card mb-8">
+                            <div class="card-header">
+                                <h3 class="card-title">Patients List</h3>
+                            </div>
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Date of Birth</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="pt : ${patients}">
+                                            <td th:text="${pt.patientID}"></td>
+                                            <td th:text="${pt.firstName}"></td>
+                                            <td th:text="${pt.lastName}"></td>
+                                            <td th:text="${pt.dateOfBirth}"></td>
+                                            <td>
+                                                <a th:href="@{'/patients/edit/' + ${pt.patientID}}" class="btn btn-warning btn-sm">Edit</a>
+                                                <a th:href="@{'/patients/delete/' + ${pt.patientID}}" class="btn btn-danger btn-sm">Delete</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Body-->
+                            <!--begin::Footer-->
+                            <div class="card-footer">
+                                <a href="/patients/new" class="btn btn-primary mb-2 float-end" >New Patient</a>
+                            </div>
+                            <!--end::Footer-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

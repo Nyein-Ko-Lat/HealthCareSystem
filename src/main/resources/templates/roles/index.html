@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Users</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6"><h3 class="mb-0">Roles</h3></div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="#">Users</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Roles List</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card mb-8">
+                            <div class="card-header">
+                                <h3 class="card-title">Roles List</h3>
+                            </div>
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Role</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="r : ${roles}">
+                                            <td th:text="${r.id}"></td>
+                                            <td th:text="${r.name}"></td>
+                                            <td>
+                                                <a th:href="@{'/roles/edit/' + ${r.id}}" class="btn btn-warning btn-sm">Edit</a>
+                                                <a th:href="@{'/roles/delete/' + ${r.id}}" class="btn btn-danger btn-sm">Delete</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Body-->
+                            <!--begin::Footer-->
+                            <div class="card-footer">
+                                <a href="/roles/new" class="btn btn-primary mb-2 float-end" >New Role</a>
+                            </div>
+                            <!--end::Footer-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

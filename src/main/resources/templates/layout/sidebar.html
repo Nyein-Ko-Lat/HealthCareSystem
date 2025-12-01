@@ -1,0 +1,95 @@
+<aside th:fragment="sidebar" class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <div class="sidebar-brand">
+        <a href="/" class="brand-link">
+            <img th:src="@{/images/AdminLTELogo.png}" alt="Logo" class="brand-image opacity-75 shadow"/>
+            <span class="brand-text fw-light">AdminLTE 4</span>
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" data-accordion="false">
+                <!-- Admin Menu -->
+                <li class="nav-item"
+                    th:classappend="${currentUri.startsWith('/users') or currentUri.startsWith('/roles')} ? 'menu-open'">
+                    <a href="#" class="nav-link"><i class="nav-icon bi bi-gear"></i><p>Admin<i class="nav-arrow bi bi-chevron-right"></i></p></a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/users}"
+                               th:class="'nav-link' + (${currentUri.startsWith('/users')} ? ' active' : '')">
+                                <i class="nav-icon bi bi-person"></i><p>Users</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/roles}"
+                               class="nav-link"
+                               th:classappend="${currentUri.startsWith('/roles')} ? ' active' : ''">
+                                <i class="nav-icon bi bi-person-vcard"></i><p>Roles</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Patient Menu -->
+                <li class="nav-item"
+                    th:classappend="${currentUri.startsWith('/patients')} ? 'menu-open'">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-person"></i><p>Patient<i class="nav-arrow bi bi-chevron-right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/patients}" class="nav-link"
+                               th:classappend="${currentUri.startsWith('/patients') } ? 'active'">
+                                <i class="nav-icon bi bi-person"></i><p>Patients</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"
+                               th:classappend="${currentUri.startsWith('/patients/records') } ? 'active'">
+                                <i class="nav-icon bi bi-card-list"></i><p>Records</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"
+                               th:classappend="${currentUri.startsWith('/patients/appointments') } ? 'active'">
+                                <i class="nav-icon bi bi-calendar-check"></i><p>Appointments</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Doctor Menu -->
+                <li class="nav-item"
+                    th:classappend="${currentUri.startsWith('/doctors')} ? 'menu-open'">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-person-video2"></i><p>Doctor<i class="nav-arrow bi bi-chevron-right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a th:href="@{/doctors}"
+                               class="nav-link"
+                               th:classappend="${currentUri.startsWith('/doctors')} ? ' active' : ''">
+                                <i class="nav-icon bi bi-person-vcard"></i><p>Doctors</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"
+                               th:classappend="${currentUri.startsWith('/doctors/schedules') } ? 'active'">
+                                <i class="nav-icon bi bi-calendar-check"></i><p>Schedules</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"
+                               th:classappend="${currentUri.startsWith('/doctors/patients') } ? 'active'">
+                                <i class="nav-icon bi bi-person-bounding-box"></i><p>Patients</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"
+                               th:classappend="${currentUri.startsWith('/doctors/reports') } ? 'active'">
+                                <i class="nav-icon bi bi-file-medical"></i><p>Reports</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>

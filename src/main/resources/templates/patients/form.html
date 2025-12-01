@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>User Form</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0">Patient Form</h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Patients</a></li>
+                        <li class="breadcrumb-item active">Patient Form</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-8">
+
+                    <div class="card-header">
+                        <h3 class="card-title">Patient Details</h3>
+                    </div>
+
+                    <form th:action="@{/patients/save}" method="post" th:object="${patient}">
+                        <input type="hidden" th:field="*{patientID}" />
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <!-- First Name -->
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           th:field="*{firstName}"
+                                           placeholder="Enter First Name" />
+                                </div>
+
+                                <!-- Last Name -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           th:field="*{lastName}"
+                                           placeholder="Enter Last Name" />
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <!-- Date of Birth -->
+                                <div class="col-md-6">
+                                    <label>Date of Birth (dd/mm/yyyy):</label><br>
+                                    <input type="text" id="dobPicker" class="form-control"
+                                           th:field="*{dateOfBirth}"
+                                           placeholder="Select date">
+                                </div>
+                                <!-- Gender -->
+                                <div class="col-md-6">
+                                    <label>Gender:</label><br>
+                                    <input type="radio" th:field="*{gender}" value="Male"> Male<br>
+                                    <input type="radio" th:field="*{gender}" value="Female"> Female<br><br>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <!-- Blood Type -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Blood Type</label>
+                                    <select class="form-control" th:field="*{bloodType}">
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                                <!-- Status Code -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-control" th:field="*{statusCode}">
+                                        <option value="PEN">Pending</option>
+                                        <option value="APR">Approved</option>
+                                        <option value="REJ">Rejected</option>
+                                        <option value="BLK">Blocked</option>
+                                        <option value="INA">Inactive</option>
+                                        <option value="DEL">Deleted</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <!-- Medical Condition -->
+                                <input type="hidden" id="familyHistoryID"/>
+                                <div class="col-md-4">
+                                    <label class="form-label">Medical Condition</label>
+                                    <select class="form-control" id="medicalCondition">
+                                        <option disabled selected>Select Condition</option>
+                                        <option th:each="c : ${conditions}" th:value="${c}" th:text="${c}"></option>
+                                    </select>
+                                </div>
+                                <!-- Status Code -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Relationship</label>
+                                    <select class="form-control"  id="relationship">
+                                        <option disabled selected>Select Relationship</option>
+                                        <option th:each="r : ${relationships}" th:value="${r}" th:text="${r}"></option>
+                                    </select>
+                                </div>
+                                <!-- Status Code -->
+                                <div class="col-md-3">
+                                    </br>
+                                    <button style="margin: 8px" class="btn btn-primary" type="button" onclick="addHistory()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-g-3">
+                            <div class="col-md-12">
+                                <table id="historyTable" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th hidden="hidden">id</th>
+                                        <th>Condition</th>
+                                        <th>Relationship</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+
+                                <input type="hidden" name="familyHistories" id="historyJson">
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary float-end" type="submit">Save</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#dobPicker", {
+                dateFormat: "d/m/Y",
+                allowInput: true,
+                defaultDate: document.getElementById("dobPicker").value || new Date()
+            });
+
+            // Load existing FamilyHistory
+            let existingHistories = /*[[${familyHistories}]]*/ [];
+            let tbody = document.querySelector("#historyTable tbody");
+
+            existingHistories.forEach(fh => {
+                let row = tbody.insertRow();
+                row.insertCell().innerText = fh.familyHistoryID;
+                row.cells[0].style.display = 'none';
+                row.insertCell().innerText = fh.medicalCondition;
+                row.insertCell().innerText = fh.relationship;
+
+                row.insertCell().innerHTML = `
+            <button type="button" class="btn btn-primary" onclick="editRow(this)">Edit</button>
+            <button type="button" class="btn btn-primary" onclick="deleteRow(this)">Remove</button>
+        `;
+            });
+
+            updateJson(); // Make sure JSON hidden input is updated
+        });
+        let editIndex = -1;
+
+        function addHistory() {
+            const fhid = document.getElementById('familyHistoryID').value;
+            const condition = document.getElementById('medicalCondition').value;
+            const relation = document.getElementById('relationship').value;
+
+            if (!condition || !relation) {
+                alert("Please select both values.");
+                return;
+            }
+
+            let tbody = document.querySelector("#historyTable tbody");
+
+            if (editIndex === -1) {
+                // Add new row
+                let row = tbody.insertRow();
+                row.insertCell().innerText = fhid;
+                row.insertCell().innerText = condition;
+                row.insertCell().innerText = relation;
+                row.cells[0].style.display = 'none';
+
+                row.insertCell().innerHTML = `
+                <button type="button" class="btn btn-primary" onclick="editRow(this)">Edit</button>
+                <button type="button" class="btn btn-primary" onclick="deleteRow(this)">Remove</button>
+            `;
+            } else {
+                // Update existing row
+                let row = tbody.rows[editIndex];
+                row.cells[0].innerText = fhid;
+                row.cells[0].style.display = 'none';
+                row.cells[1].innerText = condition;
+                row.cells[2].innerText = relation;
+                editIndex = -1;
+            }
+
+            updateJson();
+            clearInputs();
+        }
+
+        function editRow(btn) {
+            let row = btn.parentNode.parentNode;
+            editIndex = row.rowIndex - 1;
+
+            document.getElementById('familyHistoryID').value = row.cells[0].innerText;
+            document.getElementById('medicalCondition').value = row.cells[1].innerText;
+            document.getElementById('relationship').value = row.cells[2].innerText;
+        }
+
+        function deleteRow(btn) {
+            btn.parentNode.parentNode.remove();
+            updateJson();
+        }
+
+        function updateJson() {
+            let rows = document.querySelectorAll("#historyTable tbody tr");
+            let data = [];
+
+            rows.forEach(row => {
+                data.push({
+                    familyHistoryID: row.cells[0].innerText,
+                    medicalCondition: row.cells[1].innerText,
+                    relationship: row.cells[2].innerText
+                });
+            });
+
+            document.getElementById("historyJson").value = JSON.stringify(data);
+        }
+
+        function clearInputs() {
+            document.getElementById('familyHistoryID').value = "";
+            document.getElementById('medicalCondition').selectedIndex = 0;
+            document.getElementById('relationship').selectedIndex = 0;
+        }
+    </script>
+</th:block>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>User Form</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0">Doctor Form</h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Doctors</a></li>
+                        <li class="breadcrumb-item active">Doctor Form</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-8">
+
+                    <div class="card-header">
+                        <h3 class="card-title">Doctor Details</h3>
+                    </div>
+
+                    <form th:action="@{/doctors/save}" method="post" th:object="${doctor}">
+                        <input type="hidden" th:field="*{doctorID}" />
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <!-- First Name -->
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           th:field="*{firstName}"
+                                           placeholder="Enter First Name" />
+                                </div>
+
+                                <!-- Last Name -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           th:field="*{lastName}"
+                                           placeholder="Enter Last Name" />
+                                </div>
+                            </div>
+                            <div class="row g-3">
+
+                                <!-- Speciality -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Speciality</label>
+                                    <select class="form-control" th:field="*{specialty}">
+                                        <option value="GEN">General medicine</option>
+                                        <option value="GSG">General surgery</option>
+                                        <option value="ATH">Anaesthetics</option>
+                                        <option value="CSG">Cardiac surgery</option>
+                                        <option value="IMC">Internal medicine and Cardiology</option>
+                                        <option value="PED">Paediatrics</option>
+                                    </select>
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="col-md-6">
+                                    <label class="form-label">PhoneNumber</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           th:field="*{phoneNumber}"
+                                           placeholder="Enter Phone Number" />
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <!-- e Mail -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input class="form-control"
+                                           type="email"
+                                           th:field="*{email}"
+                                           placeholder="Enter e-mail" />
+                                </div>
+                                <!-- Status Code -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-control" th:field="*{statusCode}">
+                                        <option value="PEN">Pending</option>
+                                        <option value="APR">Approved</option>
+                                        <option value="REJ">Rejected</option>
+                                        <option value="BLK">Blocked</option>
+                                        <option value="INA">Inactive</option>
+                                        <option value="DEL">Deleted</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary float-end" type="submit">Save</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

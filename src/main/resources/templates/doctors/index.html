@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Users</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6"><h3 class="mb-0">Doctors</h3></div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="#">Doctors</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Doctors List</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card mb-8">
+                            <div class="card-header">
+                                <h3 class="card-title">Doctors List</h3>
+                            </div>
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="dr : ${doctors}">
+                                            <td th:text="${dr.doctorID}"></td>
+                                            <td th:text="${dr.firstName}"></td>
+                                            <td th:text="${dr.lastName}"></td>
+                                            <td>
+                                                <a th:href="@{'/doctors/edit/' + ${dr.doctorID}}" class="btn btn-warning btn-sm">Edit</a>
+                                                <a th:href="@{'/doctors/delete/' + ${dr.doctorID}}" class="btn btn-danger btn-sm">Delete</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Body-->
+                            <!--begin::Footer-->
+                            <div class="card-footer">
+                                <a href="/doctors/new" class="btn btn-primary mb-2 float-end" >New Doctor</a>
+                            </div>
+                            <!--end::Footer-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
