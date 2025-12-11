@@ -85,6 +85,14 @@ public class DoctorScheduleRepository implements IBaseRepository<DoctorSchedule,
         return jdbc.queryForObject(sql, new Object[]{doctorId}, (rs, rowNum) -> fillDoctorSchedule(rs));
     }
 
+    public List<DoctorSchedule> getAvailableDoctor(LocalDateTime appointmentDate) {
+        String sql = "CALL sp_get_available_doctors_schedule(?)";
+        List<DoctorSchedule> doctorSchedules = new ArrayList<>();
+        String p_dayOftheWeek = appointmentDate.getDayOfWeek().toString();
+        doctorSchedules =  jdbc.query(sql,new Object[]{p_dayOftheWeek },  (rs, rowNum) -> fillDoctorSchedule(rs));
+        return doctorSchedules;
+    }
+
     private DoctorSchedule fillDoctorSchedule(ResultSet rs) throws SQLException {
         DoctorSchedule doctorSchedule = new DoctorSchedule();
 
@@ -108,5 +116,4 @@ public class DoctorScheduleRepository implements IBaseRepository<DoctorSchedule,
 
         return doctorSchedule;
     }
-
 }

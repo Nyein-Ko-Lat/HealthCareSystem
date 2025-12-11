@@ -7,16 +7,16 @@ import edu.gisma.gh1043541.healthcaresystem.repository.DoctorRepository;
 import edu.gisma.gh1043541.healthcaresystem.repository.DoctorScheduleRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Service
 public class DoctorScheduleService implements IBaseService<DoctorSchedule, Long> {
 
-    private final DoctorRepository doctorRepository;
     private final DoctorScheduleRepository doctorScheduleRepository;
 
-    public DoctorScheduleService(DoctorRepository doctorRepository, DoctorScheduleRepository doctorScheduleRepository) {
-        this.doctorRepository = doctorRepository;
+    public DoctorScheduleService(DoctorScheduleRepository doctorScheduleRepository) {
         this.doctorScheduleRepository = doctorScheduleRepository;
     }
 
@@ -47,5 +47,9 @@ public class DoctorScheduleService implements IBaseService<DoctorSchedule, Long>
 
     public DoctorSchedule findByDoctorId(Long doctorId) {
         return doctorScheduleRepository.findBydoctorId(doctorId);
+    }
+
+    public List<DoctorSchedule> getAvailableDoctor(LocalDateTime daysOfWeeks) {
+        return doctorScheduleRepository.getAvailableDoctor(daysOfWeeks);
     }
 }
