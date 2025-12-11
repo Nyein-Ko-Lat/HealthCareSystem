@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Appointment Form</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0">Appointment Form</h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Appointment</a></li>
+                        <li class="breadcrumb-item active">Appointment Form</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-8">
+
+                    <div class="card-header">
+                        <h3 class="card-title">Appointment Details</h3>
+                    </div>
+
+                    <form th:action="@{/appointments/save}" method="post" th:object="${appointment}">
+                        <input type="hidden" th:field="*{appointmentID}" />
+
+                        <div th:if="${error}" class="alert alert-danger">
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <!-- Patient -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Patient</label>
+                                    <select class="form-control" th:field="*{patient.patientID}" required>
+                                        <option value="">-- Select Patient --</option>
+                                        <option th:each="p : ${patients}"
+                                                th:value="${p.patientID}"
+                                                th:text="${p.firstName + ' ' + p.lastName}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Speciality -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Speciality</label>
+                                    <select id="specialitySelect" th:field="*{doctor.specialty}" class="form-control" required>
+                                        <option value="">-- Select Speciality --</option>
+                                        <option th:each="dr : ${drSpecialist}" th:value="${dr}" th:text="${dr}"></option>
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+
+                                <!-- Doctor (Dynamic) -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Doctor</label>
+                                    <select class="form-control" th:field="*{doctor.doctorID}" id="doctorSelect" required>
+                                        <option value="">-- Select Doctor --</option>
+                                    </select>
+                                    <button type="button" id="checkScheduleBtn" class="btn btn-info btn-sm mt-2">
+                                        Check Available Schedule
+                                    </button>
+                                </div>
+
+                                <!-- Appointment Date & Time -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Appointment Date & Time</label>
+                                    <input type="text" id="appointmentDTPicker"
+                                           class="form-control"
+                                           th:field="*{appointmentDate}"
+                                           required />
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div th:insert="fragments/schedule_view :: scheduleContent"></div>
+                            </div>
+                            <div class="row g-3">
+
+                                <!-- Reason -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Reason</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           th:field="*{reason}"
+                                           placeholder="Enter the Reason" />
+                                </div>
+
+                                <!-- Status -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-control" th:field="*{statusCode}">
+                                        <option value="PEN">Pending</option>
+                                        <option value="APR">Approved</option>
+                                        <option value="REJ">Rejected</option>
+                                        <option value="BLK">Blocked</option>
+                                        <option value="INA">Inactive</option>
+                                        <option value="DEL">Deleted</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary float-end" type="submit">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        // Load doctors when speciality changes
+        document.getElementById("specialitySelect").addEventListener("change", function () {
+            loadDoctors(this.value);
+        });
+
+        function hideScheduleView() {
+            document.getElementById('scheduleViewContainer').classList.add('d-none');
+        }
+
+        document.getElementById("checkScheduleBtn").addEventListener("click", function() {
+            let doctorSelect = document.getElementById("doctorSelect");
+            let doctorID = doctorSelect.value;
+
+            if (!doctorID || doctorID.trim() === "") {
+                alert("Please select a doctor first to check the schedule.");
+                return;
+            }
+            loadScheduleForView(doctorID);
+        });
+
+        // Flatpickr
+        flatpickr("#appointmentDTPicker", {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            allowInput: true,
+            defaultDate: document.getElementById("appointmentDTPicker").value || new Date()
+        });
+
+        function loadScheduleForView(doctorId) {
+
+            const container = document.getElementById('scheduleViewForm');
+            const divcontainer = document.getElementById('scheduleViewContainer');
+            divcontainer.classList.remove('d-none');
+            if (!container) {
+                console.error("Schedule View Container not found in DOM.");
+                return;
+            }
+
+            container.querySelectorAll('input, select').forEach(element => {
+
+                // Handle checkboxes (sets them to unchecked)
+                if (element.type === 'checkbox') {
+                    element.checked = false;
+                }
+                // Handle text, time inputs, and select elements (sets value to empty string)
+                else {
+                    element.value = '';
+                }
+            });
+
+            fetch(`/api/doctors/schedule/${doctorId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Schedule not found for Doctor ID: ${doctorId}.`);
+                    }
+                    return response.json();
+                })
+                .then(schedule => {
+                    document.getElementById('viewIsMon').checked = schedule.isMon;
+                    document.getElementById('viewIsTue').checked = schedule.isTue;
+                    document.getElementById('viewIsWed').checked = schedule.isWed;
+                    document.getElementById('viewIsThu').checked = schedule.isThu;
+                    document.getElementById('viewIsFri').checked = schedule.isFri;
+                    document.getElementById('viewIsSat').checked = schedule.isSat;
+                    document.getElementById('viewIsSun').checked = schedule.isSun;
+                    document.getElementById('viewStartTime').value = schedule.startTime;
+                    document.getElementById('viewEndTime').value = schedule.endTime;
+
+                    // Ensure container is visible
+                    container.classList.remove('d-none');
+                })
+                .catch(error => {
+                    console.error("Error loading doctor schedule:", error);
+                    alert("Could not load schedule details. " + error.message);
+                    container.classList.add('d-none'); // Hide if there's an error
+                });
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            const specSelect = document.getElementById("specialitySelect");
+
+            const existingDoctorId = /*[[${appointment.doctor != null ? appointment.doctor.doctorID : null}]]*/ null;
+            if (specSelect.value) {
+                loadDoctors(specSelect.value, existingDoctorId);
+            }
+        });
+
+        function loadDoctors(speciality, selectedDoctorId = null) {
+            let doctorSelect = document.getElementById("doctorSelect");
+            if (!speciality) return;
+
+            doctorSelect.innerHTML = "<option>Loading...</option>";
+            const encodedSpeciality = encodeURIComponent(speciality.trim());
+
+            fetch("/appointments/get_doctors_by_speciality/" + encodedSpeciality)
+                .then(resp => resp.json())
+                .then(data => {
+                    doctorSelect.innerHTML = "<option value=''>-- Select Doctor --</option>";
+                    data.forEach(d => {
+                        let opt = document.createElement("option");
+                        opt.value = d.doctorID;
+                        opt.text = d.firstName + " " + d.lastName;
+
+                        if (selectedDoctorId && d.doctorID == selectedDoctorId) {
+                            opt.selected = true;
+                        }
+                        doctorSelect.appendChild(opt);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error loading doctors:", err);
+                    doctorSelect.innerHTML = "<option value=''>-- Error loading --</option>";
+                });
+        }
+
+    </script>
+</th:block>
+</html>

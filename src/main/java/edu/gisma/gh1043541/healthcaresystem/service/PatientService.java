@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PatientServiceI implements IBaseService<Patient, Long> {
+public class PatientService implements IBaseService<Patient, Long> {
 
     private final PatientRepository patientRepo;
     private final FamilyHistoryRepository fhRepo;
 
-    public PatientServiceI(PatientRepository patientRepo, FamilyHistoryRepository fhRepo) {
+    public PatientService(PatientRepository patientRepo, FamilyHistoryRepository fhRepo) {
         this.patientRepo = patientRepo;
         this.fhRepo = fhRepo;
     }

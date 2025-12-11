@@ -5,14 +5,15 @@ import edu.gisma.gh1043541.healthcaresystem.entity.Doctor;
 import edu.gisma.gh1043541.healthcaresystem.repository.DoctorRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DoctorServiceI implements IBaseService<Doctor, Long> {
+public class DoctorService implements IBaseService<Doctor, Long> {
 
     private final DoctorRepository doctorRepository;
 
-    public DoctorServiceI(DoctorRepository doctorRepository) {
+    public DoctorService(DoctorRepository doctorRepository) {
         this.doctorRepository = doctorRepository;
     }
 
@@ -40,4 +41,6 @@ public class DoctorServiceI implements IBaseService<Doctor, Long> {
     public List<Doctor> findAll() {
         return doctorRepository.findAll();
     }
+
+    public List<Doctor> findBySpecialityId(String speciality) {return doctorRepository.findBySpecialityId(speciality);    }
 }

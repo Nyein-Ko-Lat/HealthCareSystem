@@ -39,8 +39,8 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="r : ${roles}">
-                                            <td th:text="${r.id}"></td>
+                                        <tr th:each="r,stat : ${roles}">
+                                            <td th:text="${stat.index + 1}"></td>
                                             <td th:text="${r.name}"></td>
                                             <td>
                                                 <a th:href="@{'/roles/edit/' + ${r.id}}" class="btn btn-warning btn-sm">Edit</a>
@@ -55,7 +55,7 @@
                             <!--end::Body-->
                             <!--begin::Footer-->
                             <div class="card-footer">
-                                <a href="/roles/new" class="btn btn-primary mb-2 float-end" >New Role</a>
+                                <a th:href="@{/roles/new}" class="btn btn-primary mb-2 float-end" >New Role</a>
                             </div>
                             <!--end::Footer-->
                         </div>

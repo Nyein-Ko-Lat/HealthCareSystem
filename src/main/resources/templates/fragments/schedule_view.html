@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="scheduleContent">
+    <div class="card card-outline card-info mt-3">
+        <div id="scheduleViewContainer" class="d-none">
+            <div class="card-header">
+                <h3 class="card-title">Doctor Schedule Preview</h3>
+            </div>
+            <div id="scheduleViewForm">
+                <input type="hidden" id="viewDoctorScheduleID" />
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Available Days</label>
+
+                            <div class="d-flex gap-4">
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="viewIsMon" disabled /> Mon
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="viewIsTue" disabled /> Tue
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="viewIsWed" disabled /> Wed
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="viewIsThu" disabled /> Thu
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="viewIsFri" disabled /> Fri
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="viewIsSat" disabled /> Sat
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="viewIsSun" disabled /> Sun
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Start Time</label>
+                            <input class="form-control" type="time" id="viewStartTime" readonly disabled />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">End Time</label>
+                            <input class="form-control" type="time" id="viewEndTime" readonly disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <button type="button" class="btn btn-secondary" onclick="hideScheduleView()">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

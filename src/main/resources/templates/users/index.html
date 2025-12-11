@@ -33,7 +33,7 @@
                                     <table class="table table-bordered mt-3">
                                         <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            <th>No</th>
                                             <th>Username</th>
                                             <th>Email</th>
                                             <th>Role</th>
@@ -41,8 +41,8 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="u : ${users}">
-                                            <td th:text="${u.id}"></td>
+                                        <tr th:each="u,stat : ${users}">
+                                            <td th:text="${stat.index + 1}"></td>
                                             <td th:text="${u.username}"></td>
                                             <td th:text="${u.email}"></td>
                                             <td th:text="${u.roleName}"></td>
@@ -59,7 +59,7 @@
                             <!--end::Body-->
                             <!--begin::Footer-->
                             <div class="card-footer">
-                                <a href="/users/create" class="btn btn-primary mb-2 float-end" >New User</a>
+                                <a th:href="@{/users/create}" class="btn btn-primary mb-2 float-end" >New User</a>
                             </div>
                             <!--end::Footer-->
                         </div>

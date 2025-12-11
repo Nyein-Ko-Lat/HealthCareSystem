@@ -1,49 +1,79 @@
 package edu.gisma.gh1043541.healthcaresystem.controller;
 
 import edu.gisma.gh1043541.healthcaresystem.entity.Doctor;
-import edu.gisma.gh1043541.healthcaresystem.service.DoctorServiceI;
+import edu.gisma.gh1043541.healthcaresystem.entity.DoctorSchedule;
+import edu.gisma.gh1043541.healthcaresystem.service.DoctorScheduleService;
+import edu.gisma.gh1043541.healthcaresystem.service.DoctorService;
+import edu.gisma.gh1043541.healthcaresystem.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/doctors")
 public class DoctorController {
 
-    private final DoctorServiceI doctorService;
+    private final DoctorService doctorService;
+    private final DoctorScheduleService scheduleService;
+    private final UserService userService;
 
-    public DoctorController(DoctorServiceI doctorService) {
+    public DoctorController(DoctorService doctorService, DoctorScheduleService scheduleService, UserService userService) {
         this.doctorService = doctorService;
+        this.scheduleService = scheduleService;
+        this.userService = userService;
     }
 
-    @GetMapping
-    public String listDoctors(Model model) {
+    @GetMapping("/schedule/list")
+    public String listSchedules(Model model) {
+        List<DoctorSchedule> schedules = scheduleService.findAll();
+        model.addAttribute("schedules", schedules);
+        return "doctorschedules/index"; // HTML page
+    }
+    // CREATE FORM
+    @GetMapping("/schedule/new")
+    public String createScheduleForm(Model model) {
+        model.addAttribute("schedule", new DoctorSchedule());
+        model.addAttribute("doctors", doctorService.findAll()); // dropdown
+        return "doctorschedules/form"; // HTML page
+    }
+    // EDIT FORM
+    @GetMapping("/schedule/edit/{id}")
+    public String editScheduleForm(@PathVariable Long id, Model model) {
+        DoctorSchedule schedule = scheduleService.findById(id);
+        model.addAttribute("schedule", schedule);
         model.addAttribute("doctors", doctorService.findAll());
-        return "doctors/index";
+        return "doctorschedules/form";
     }
 
-    @GetMapping("/new")
-    public String createDoctorForm(Model model) {
-        model.addAttribute("doctor", new Doctor());
-        return "doctors/form";
+    // SAVE (CREATE + UPDATE)
+    @PostMapping("/schedule/save")
+    public String saveDoctorSchedule(@ModelAttribute("doctorSchedule") DoctorSchedule doctorSchedule) {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Long userId = userService.findByUsername(username).getId();
+        doctorSchedule.setCreatedBy(userId);
+        doctorSchedule.setUpdatedBy(userId);
+        scheduleService.save(doctorSchedule);
+        return "redirect:/doctors/schedule/list";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute  Doctor doctor) {
-        doctorService.save(doctor);
-        return "redirect:/doctors";
-    }
 
-    @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable Long id, Model model) {
-        model.addAttribute("doctor", doctorService.findById(id));
-        return "doctors/form";
-    }
+    @GetMapping("/schedule/delete/{id}")
+    public String deleteDoctor(@PathVariable Long id) {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        doctorService.delete(id);
-        return "redirect:/doctors";
+        Long userId = userService.findByUsername(username).getId();
+        scheduleService.delete(id,userId);
+        return "redirect:/doctors/schedule/list";
     }
 }
 

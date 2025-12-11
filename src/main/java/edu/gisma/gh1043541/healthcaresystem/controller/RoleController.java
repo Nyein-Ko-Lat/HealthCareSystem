@@ -2,6 +2,8 @@ package edu.gisma.gh1043541.healthcaresystem.controller;
 
 import edu.gisma.gh1043541.healthcaresystem.entity.Role;
 import edu.gisma.gh1043541.healthcaresystem.service.RoleServiceI;
+import edu.gisma.gh1043541.healthcaresystem.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class RoleController {
 
     private final RoleServiceI roleService;
+    private final UserService userService;
 
-    public RoleController(RoleServiceI roleService) {
+    public RoleController(RoleServiceI roleService, UserService userService) {
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -30,6 +34,14 @@ public class RoleController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute  Role role) {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+        Long userId = userService.findByUsername(username).getId();
+        role.setUpdatedBy(userId);
+        role.setCreatedBy(userId);
+
         roleService.save(role);
         return "redirect:/roles";
     }

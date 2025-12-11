@@ -29,7 +29,7 @@
                         <h3 class="card-title">Doctor Details</h3>
                     </div>
 
-                    <form th:action="@{/doctors/save}" method="post" th:object="${doctor}">
+                    <form th:action="@{/settings/doctors/save}" method="post" th:object="${doctor}">
                         <input type="hidden" th:field="*{doctorID}" />
 
                         <div class="card-body">
@@ -59,12 +59,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Speciality</label>
                                     <select class="form-control" th:field="*{specialty}">
-                                        <option value="GEN">General medicine</option>
-                                        <option value="GSG">General surgery</option>
-                                        <option value="ATH">Anaesthetics</option>
-                                        <option value="CSG">Cardiac surgery</option>
-                                        <option value="IMC">Internal medicine and Cardiology</option>
-                                        <option value="PED">Paediatrics</option>
+                                        <option th:each="dr : ${drSpecialist}" th:value="${dr}" th:text="${dr}"></option>
                                     </select>
                                 </div>
 

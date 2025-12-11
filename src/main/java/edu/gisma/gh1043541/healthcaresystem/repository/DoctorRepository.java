@@ -58,6 +58,11 @@ public class DoctorRepository implements IBaseRepository<Doctor, Long> {
         return jdbc.query(sql, (rs, rowNum) -> fillDoctor(rs));
     }
 
+    public List<Doctor> findBySpecialityId(String speciality) {
+        String sql = "CALL sp_get_doctor_by_Speciality(?)"; // create SP if not exists
+        return jdbc.query(sql, new Object[]{speciality}, (rs, rowNum) -> fillDoctor(rs));
+    }
+
 
     private Doctor fillDoctor(ResultSet rs) throws SQLException {
         Doctor doctor = new Doctor();

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Patient Condition Form</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0">Patient Diagnose Form</h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Patient Diagnose</a></li>
+                        <li class="breadcrumb-item active">Patient Diagnose Form</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-8">
+
+                    <div class="card-header">
+                        <h3 class="card-title">Patient Condition Details</h3>
+                    </div>
+
+                    <form th:action="@{/patientcondition/save}" method="post" th:object="${patientcondition}">
+                        <input type="hidden" th:field="*{conditionID}" />
+                        <input th:type="hidden" th:field="*{patientVisit.visitID}"/>
+
+                        <div th:if="${error}" class="alert alert-danger">
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <!-- Patient -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Patient</label>
+                                    <select class="form-control" th:field="*{patient.patientID}"
+                                            th:disabled="*{patientVisit.visitID != null} ? 'disabled'">
+                                        <option value="">-- Select Patient --</option>
+                                        <option th:each="p : ${patients}"
+                                                th:value="${p.patientID}"
+                                                th:text="${p.firstName + ' ' + p.lastName}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Speciality -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Speciality</label>
+                                    <select
+                                            th:disabled="*{patientVisit.visitID != null} ? 'disabled'"
+                                            id="specialitySelect" th:field="*{doctor.specialty}" class="form-control" required>
+                                        <option value="">-- Select Speciality --</option>
+                                        <option th:each="dr : ${drSpecialist}" th:value="${dr}" th:text="${dr}"></option>
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+
+                                <!-- Doctor (Dynamic) -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Doctor</label>
+                                    <select
+                                            th:disabled="*{patientVisit.visitID != null} ? 'disabled'"
+                                            class="form-control" th:field="*{doctor.doctorID}" id="doctorSelect" required>
+                                        <option value="">-- Select Doctor --</option>
+                                    </select>
+                                </div>
+
+                                <!-- PatientCondition Date & Time -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Diagnosed Date & Time</label>
+                                    <input type="text" id="patientConditionDTPicker"
+                                           class="form-control"
+                                           th:field="*{diagnosedDate}"
+                                           required />
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <!-- Condition -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Speciality</label>
+                                    <select class="form-control" th:field="*{conditionName}">
+                                        <option th:each="cd : ${conditions}" th:value="${cd}" th:text="${cd}"></option>
+                                    </select>
+                                </div>
+                                <!-- Reason -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Diagnosed Details</label>
+                                    <textarea class="form-control"
+                                        type="text"
+                                        rows="10"
+                                        maxlength="500"
+                                        th:field="*{doctorNote}"
+                                        placeholder="Enter the Diagnosed details" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary float-end" type="submit">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        // Load doctors when speciality changes
+        document.getElementById("specialitySelect").addEventListener("change", function () {
+            loadDoctors(this.value);
+        });
+
+        function hideScheduleView() {
+            document.getElementById('scheduleViewContainer').classList.add('d-none');
+        }
+        // Flatpickr
+        flatpickr("#patientConditionDTPicker", {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            allowInput: true,
+            defaultDate: document.getElementById("patientConditionDTPicker").value || new Date()
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const specSelect = document.getElementById("specialitySelect");
+            const existingDoctorId = /*[[${patientcondition.doctor != null ? patientcondition.doctor.doctorID : null}]]*/ null;
+            if (specSelect.value) {
+                loadDoctors(specSelect.value, existingDoctorId);
+            }
+        });
+
+        function loadDoctors(speciality, selectedDoctorId = null) {
+            let doctorSelect = document.getElementById("doctorSelect");
+            if (!speciality) return;
+
+            doctorSelect.innerHTML = "<option>Loading...</option>";
+            const encodedSpeciality = encodeURIComponent(speciality.trim());
+
+            fetch("/appointments/get_doctors_by_speciality/" + encodedSpeciality)
+                .then(resp => resp.json())
+                .then(data => {
+                    doctorSelect.innerHTML = "<option value=''>-- Select Doctor --</option>";
+                    data.forEach(d => {
+                        let opt = document.createElement("option");
+                        opt.value = d.doctorID;
+                        opt.text = d.firstName + " " + d.lastName;
+
+                        if (selectedDoctorId && d.doctorID == selectedDoctorId) {
+                            opt.selected = true;
+                        }
+                        doctorSelect.appendChild(opt);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error loading doctors:", err);
+                    doctorSelect.innerHTML = "<option value=''>-- Error loading --</option>";
+                });
+        }
+
+    </script>
+</th:block>
+</html>

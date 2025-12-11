@@ -32,8 +32,40 @@ public class StaticDataService {
             "Daughter",
             "Spouse",
             "Grandparent",
-            "Relative",
-            "Other"
+            "Other Relative"
+    );
+
+    // ---------------------------
+    // Relationship Types
+    // ---------------------------
+    private static final List<String> DrSpecialist = Arrays.asList(
+            "General Practice",
+            "Pediatric",
+            "Cardiology",
+            "Surgery",
+            "Neurology",
+            "Gastroenterology",
+            "Dermatology",
+            "Ophthalmology",
+            "Endocrinology",
+            "Pulmonology",
+            "Nephrology"
+    );
+    // ---------------------------
+    // Relationship Types
+    // ---------------------------
+    private static final List<String> PatientCondition = Arrays.asList(
+            "General Checkup",
+            "Follow-Up",
+            "Transfer to Specialist",
+            "Emergency Visit",
+            "Medication Review",
+            "Lab Test Required",
+            "Imaging Required (X-ray, MRI, USG)",
+            "Chronic Disease Management",
+            "Post-Procedure Review",
+            "Vaccination / Immunization",
+            "Others"
     );
 
     public static List<String> getCommonMedicalConditions() {
@@ -43,6 +75,8 @@ public class StaticDataService {
     public static List<String> getRelationships() {
         return RELATIONSHIPS;
     }
+    public static List<String> getDrSpecialist() {return DrSpecialist;}
+    public static List<String> getPatientCondition() {return PatientCondition;}
 
 
 }

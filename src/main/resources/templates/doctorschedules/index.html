@@ -16,7 +16,7 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
                                 <li class="breadcrumb-item"><a href="#">Doctors</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Doctors List</li>
+                                <li class="breadcrumb-item active" aria-current="page">Doctors Schedules</li>
                             </ol>
                         </div>
                     </div>
@@ -24,7 +24,7 @@
                     <div class="col-md-12">
                         <div class="card mb-8">
                             <div class="card-header">
-                                <h3 class="card-title">Doctors List</h3>
+                                <h3 class="card-title">Doctors Schedules List</h3>
                             </div>
                             <!--begin::Body-->
                             <div class="card-body">
@@ -34,22 +34,20 @@
                                         <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
+                                            <th>Name</th>
                                             <th>Specialty</th>
-                                            <th>Phone No</th>
+                                            <th>Phone No.</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="dr,stat : ${doctors}">
+                                        <tr th:each="drSch,stat : ${schedules}">
                                             <td th:text="${stat.index + 1}"></td>
-                                            <td th:text="${dr.firstName}"></td>
-                                            <td th:text="${dr.lastName}"></td>
-                                            <td th:text="${dr.specialty}"></td>
-                                            <td th:text="${dr.phoneNumber}"></td>
+                                            <td th:text="${drSch.getDoctor().firstName + ' ' + drSch.getDoctor().lastName}"></td>
+                                            <td th:text="${drSch.getDoctor().specialty}"></td>
+                                            <td th:text="${drSch.getDoctor().phoneNumber}"></td>
                                             <td>
-                                                <a th:href="@{'/settings/doctors/edit/' + ${dr.doctorID}}" class="btn btn-warning btn-sm">Edit</a>
-                                                <a th:href="@{'/settings/doctors/delete/' + ${dr.doctorID}}" class="btn btn-danger btn-sm">Delete</a>
+                                                <a th:href="@{'/doctors/schedule/edit/' + ${drSch.doctorScheduleID}}" class="btn btn-warning btn-sm">Edit</a>
+                                                <a th:href="@{'/doctors/schedule/delete/' + ${drSch.doctorScheduleID}}" class="btn btn-danger btn-sm">Delete</a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -60,7 +58,7 @@
                             <!--end::Body-->
                             <!--begin::Footer-->
                             <div class="card-footer">
-                                <a th:href="@{/settings/doctors/new}" class="btn btn-primary mb-2 float-end" >New Doctor</a>
+                                <a th:href="@{/doctors/schedule/new}" class="btn btn-primary mb-2 float-end" >New Schedule</a>
                             </div>
                             <!--end::Footer-->
                         </div>

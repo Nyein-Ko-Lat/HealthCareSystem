@@ -29,7 +29,7 @@
                         <h3 class="card-title">Patient Details</h3>
                     </div>
 
-                    <form th:action="@{/patients/save}" method="post" th:object="${patient}">
+                    <form th:action="@{/settings/patients/save}" method="post" th:object="${patient}">
                         <input type="hidden" th:field="*{patientID}" />
 
                         <div class="card-body">
@@ -97,6 +97,14 @@
                                 </div>
                             </div>
                             <div class="row g-3">
+                                <!-- Status Code -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Relationship</label>
+                                    <select class="form-control"  id="relationship">
+                                        <option disabled selected>Select Relationship</option>
+                                        <option th:each="r : ${relationships}" th:value="${r}" th:text="${r}"></option>
+                                    </select>
+                                </div>
                                 <!-- Medical Condition -->
                                 <input type="hidden" id="familyHistoryID"/>
                                 <div class="col-md-4">
@@ -104,14 +112,6 @@
                                     <select class="form-control" id="medicalCondition">
                                         <option disabled selected>Select Condition</option>
                                         <option th:each="c : ${conditions}" th:value="${c}" th:text="${c}"></option>
-                                    </select>
-                                </div>
-                                <!-- Status Code -->
-                                <div class="col-md-4">
-                                    <label class="form-label">Relationship</label>
-                                    <select class="form-control"  id="relationship">
-                                        <option disabled selected>Select Relationship</option>
-                                        <option th:each="r : ${relationships}" th:value="${r}" th:text="${r}"></option>
                                     </select>
                                 </div>
                                 <!-- Status Code -->
@@ -127,8 +127,8 @@
                                     <thead>
                                     <tr>
                                         <th hidden="hidden">id</th>
-                                        <th>Condition</th>
                                         <th>Relationship</th>
+                                        <th>Condition</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -170,8 +170,8 @@
                 let row = tbody.insertRow();
                 row.insertCell().innerText = fh.familyHistoryID;
                 row.cells[0].style.display = 'none';
-                row.insertCell().innerText = fh.medicalCondition;
                 row.insertCell().innerText = fh.relationship;
+                row.insertCell().innerText = fh.medicalCondition;
 
                 row.insertCell().innerHTML = `
             <button type="button" class="btn btn-primary" onclick="editRow(this)">Edit</button>
@@ -199,8 +199,8 @@
                 // Add new row
                 let row = tbody.insertRow();
                 row.insertCell().innerText = fhid;
-                row.insertCell().innerText = condition;
                 row.insertCell().innerText = relation;
+                row.insertCell().innerText = condition;
                 row.cells[0].style.display = 'none';
 
                 row.insertCell().innerHTML = `
@@ -212,8 +212,8 @@
                 let row = tbody.rows[editIndex];
                 row.cells[0].innerText = fhid;
                 row.cells[0].style.display = 'none';
-                row.cells[1].innerText = condition;
-                row.cells[2].innerText = relation;
+                row.cells[1].innerText = relation;
+                row.cells[2].innerText = condition;
                 editIndex = -1;
             }
 
@@ -226,8 +226,8 @@
             editIndex = row.rowIndex - 1;
 
             document.getElementById('familyHistoryID').value = row.cells[0].innerText;
-            document.getElementById('medicalCondition').value = row.cells[1].innerText;
-            document.getElementById('relationship').value = row.cells[2].innerText;
+            document.getElementById('relationship').value = row.cells[1].innerText;
+            document.getElementById('medicalCondition').value = row.cells[2].innerText;
         }
 
         function deleteRow(btn) {
@@ -242,8 +242,8 @@
             rows.forEach(row => {
                 data.push({
                     familyHistoryID: row.cells[0].innerText,
-                    medicalCondition: row.cells[1].innerText,
-                    relationship: row.cells[2].innerText
+                    relationship: row.cells[1].innerText,
+                    medicalCondition: row.cells[2].innerText
                 });
             });
 

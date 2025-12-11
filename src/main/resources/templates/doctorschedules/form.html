@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head>
+    <title>Doctor Schedule Form</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0">Doctor Schedule</h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Doctors</a></li>
+                        <li class="breadcrumb-item active">Schedule</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+
+                <div class="card mb-8">
+                    <div class="card-header">
+                        <h3 class="card-title">Schedule Details</h3>
+                    </div>
+
+                    <form th:action="@{/doctors/schedule/save}"
+                          th:object="${schedule}"
+                          method="post">
+
+                        <!-- Hidden ID only -->
+                        <input type="hidden" th:field="*{doctorScheduleID}" />
+
+                        <div class="card-body">
+
+                            <!-- SELECT DOCTOR -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Doctor</label>
+
+                                    <select class="form-control" th:field="*{doctor.doctorID}" required>
+                                        <option value="">-- Select Doctor --</option>
+
+                                        <option th:each="doc : ${doctors}"
+                                                th:value="${doc.doctorID}"
+                                                th:text="${doc.firstName} + ' ' + ${doc.lastName}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Days of Week -->
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Available Days</label>
+
+                                    <div class="d-flex gap-4">
+
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:field="*{isMon}" /> Mon
+                                        </label>
+
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:field="*{isTue}" /> Tue
+                                        </label>
+
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:field="*{isWed}" /> Wed
+                                        </label>
+
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:field="*{isThu}" /> Thu
+                                        </label>
+
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:field="*{isFri}" /> Fri
+                                        </label>
+
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:field="*{isSat}" /> Sat
+                                        </label>
+
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:field="*{isSun}" /> Sun
+                                        </label>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Time Range -->
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <label class="form-label">Start Time</label>
+                                    <input class="form-control" type="time" th:field="*{startTime}" required />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">End Time</label>
+                                    <input class="form-control" type="time" th:field="*{endTime}" required />
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-control" th:field="*{statusCode}">
+                                        <option value="USE">Active</option>
+                                        <option value="INA">Inactive</option>
+                                        <option value="DEL">Deleted</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary float-end" type="submit">Save Schedule</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
