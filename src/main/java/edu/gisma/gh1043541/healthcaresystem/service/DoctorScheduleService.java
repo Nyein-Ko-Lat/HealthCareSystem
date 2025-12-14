@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DoctorScheduleService implements IBaseService<DoctorSchedule, Long> {
@@ -50,6 +51,21 @@ public class DoctorScheduleService implements IBaseService<DoctorSchedule, Long>
     }
 
     public List<DoctorSchedule> getAvailableDoctor(LocalDateTime daysOfWeeks) {
-        return doctorScheduleRepository.getAvailableDoctor(daysOfWeeks);
+        List<DoctorSchedule> availableDoctors = doctorScheduleRepository.getAvailableDoctor(daysOfWeeks);
+        availableDoctors.sort((sch1, sch2) ->
+                sch1.getDoctor().getSpecialty().compareTo(sch2.getDoctor().getSpecialty())
+        );
+        return availableDoctors;
+    }
+    public Map<String,Integer> getAvailableDoctorsScheduleBySepciality(LocalDateTime daysOfWeeks) {
+        return doctorScheduleRepository.getAvailableDoctorsScheduleBySepciality(daysOfWeeks);
+    }
+
+    public Map<List<String>, Integer> getAvgWaitingBySpeciality() {
+        return doctorScheduleRepository.getAvgWaitingBySpeciality();
+    }
+
+    public Map<List<String>, Integer> getAvgWaitingByDoctor() {
+        return doctorScheduleRepository.getAvgWaitingByDoctor();
     }
 }

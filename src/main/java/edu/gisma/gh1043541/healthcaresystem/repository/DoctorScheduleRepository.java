@@ -3,6 +3,7 @@ package edu.gisma.gh1043541.healthcaresystem.repository;
 import edu.gisma.gh1043541.healthcaresystem.entity.Appointment;
 import edu.gisma.gh1043541.healthcaresystem.entity.DoctorSchedule;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -11,7 +12,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class DoctorScheduleRepository implements IBaseRepository<DoctorSchedule, Long> {
@@ -90,6 +93,66 @@ public class DoctorScheduleRepository implements IBaseRepository<DoctorSchedule,
         List<DoctorSchedule> doctorSchedules = new ArrayList<>();
         String p_dayOftheWeek = appointmentDate.getDayOfWeek().toString();
         doctorSchedules =  jdbc.query(sql,new Object[]{p_dayOftheWeek },  (rs, rowNum) -> fillDoctorSchedule(rs));
+        return doctorSchedules;
+    }
+
+    public Map<String,Integer> getAvailableDoctorsScheduleBySepciality(LocalDateTime appointmentDate) {
+        String sql = "CALL sp_get_available_doctors_schedule_by_sepciality(?)";
+        Map<String,Integer> doctorSchedules = new HashMap<>();
+        String p_dayOftheWeek = appointmentDate.getDayOfWeek().toString();
+        doctorSchedules =jdbc.query(sql, new Object[]{p_dayOftheWeek}, new ResultSetExtractor<Map<String, Integer>>() {
+            @Override
+            public Map<String, Integer> extractData(ResultSet rs) throws SQLException {
+                Map<String, Integer> results = new HashMap<>();
+                while (rs.next()) {
+                    String key = rs.getString("Specialty");
+                    Integer value = rs.getInt("DoctorCount");
+                    results.put(key, value);
+                }
+                return results;
+            }
+        });
+        return doctorSchedules;
+    }
+
+    public Map<List<String>, Integer> getAvgWaitingBySpeciality() {
+        String sql = "CALL sp_get_avg_waiting_by_speciality()";
+        Map<List<String>,Integer> doctorSchedules = new HashMap<>();
+        doctorSchedules =jdbc.query(sql, new ResultSetExtractor<Map<List<String>, Integer>>() {
+            @Override
+            public Map<List<String>, Integer> extractData(ResultSet rs) throws SQLException {
+                Map<List<String>, Integer> results = new HashMap<>();
+                while (rs.next()) {
+                    List<String> key = new ArrayList<>();
+                    key.add(rs.getString("DiagnosedDate"));
+                    key.add(rs.getString("Specialty"));
+                    Integer value = rs.getInt("AverageWaiting");
+                    results.put(key, value);
+                }
+                return results;
+            }
+        });
+        return doctorSchedules;
+    }
+
+
+    public Map<List<String>, Integer> getAvgWaitingByDoctor() {
+        String sql = "CALL sp_get_avg_waiting_by_doctor()";
+        Map<List<String>,Integer> doctorSchedules = new HashMap<>();
+        doctorSchedules =jdbc.query(sql, new ResultSetExtractor<Map<List<String>, Integer>>() {
+            @Override
+            public Map<List<String>, Integer> extractData(ResultSet rs) throws SQLException {
+                Map<List<String>, Integer> results = new HashMap<>();
+                while (rs.next()) {
+                    List<String> key = new ArrayList<>();
+                    key.add(rs.getString("Doctor"));
+                    key.add(rs.getString("Specialty"));
+                    Integer value = rs.getInt("AverageWaiting");
+                    results.put(key, value);
+                }
+                return results;
+            }
+        });
         return doctorSchedules;
     }
 

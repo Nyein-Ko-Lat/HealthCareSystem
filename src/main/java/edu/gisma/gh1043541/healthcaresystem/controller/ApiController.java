@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -43,18 +44,43 @@ public class ApiController {
     @GetMapping("/doctors/getcount")
     @ResponseBody
     public int getDoctorCount() {
-        return doctorScheduleService.findAll().size();
+        return doctorService.findAll().size();
     }
 
-    @GetMapping("/doctors/getavailablecount")
+    @GetMapping("/doctors/getavailabledoctors")
     @ResponseBody
-    public List<DoctorSchedule> getAvailableDoctorCount() {
+    public List<DoctorSchedule> getAvailableDoctors() {
         return doctorScheduleService.getAvailableDoctor(LocalDateTime.now());
     }
-
-    @GetMapping("/patients/getavailablecount")
+    @GetMapping("/doctors/getscheduleddocspecialitycount")
     @ResponseBody
-    public List<Appointment> getAppointmentCount() {
+    public Map<String,Integer> getScheduledDocSpecialityCount() {
+        return doctorScheduleService.getAvailableDoctorsScheduleBySepciality(LocalDateTime.now());
+    }
+    @GetMapping("/doctors/gettopdoctors")
+    @ResponseBody
+    public Map<List<String>,Integer> getTopDoctors() {
+        return doctorService.getTopDoctors(5);
+    }
+    @GetMapping("/doctors/getavgwaitingbyspeciality")
+    @ResponseBody
+    public Map<List<String>,Integer> AvgWaitingBySpeciality() {
+        return doctorScheduleService.getAvgWaitingBySpeciality();
+    }
+    @GetMapping("/doctors/getavgwaitingbydoctor")
+    @ResponseBody
+    public Map<List<String>,Integer> AvgWaitingByDoctor() {
+        return doctorScheduleService.getAvgWaitingByDoctor();
+    }
+
+    @GetMapping("/patients/getAppointmentcount")
+    @ResponseBody
+    public int getAppointmentCount() {
+        return appointmentService.findApprovedAppointmentsByDate(LocalDate.now()).size();
+    }
+    @GetMapping("/patients/getappointments")
+    @ResponseBody
+    public List<Appointment> getAppointments() {
         return appointmentService.findApprovedAppointmentsByDate(LocalDate.now());
     }
 }

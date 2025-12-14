@@ -14,6 +14,12 @@
                     <a href="#" class="nav-link"><i class="nav-icon bi bi-gear"></i><p>Admin<i class="nav-arrow bi bi-chevron-right"></i></p></a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a th:href="@{/}"
+                               th:class="'nav-link'">
+                                <i class="nav-icon bi bi-person"></i><p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a th:href="@{/users}"
                                th:class="'nav-link' + (${currentUri.startsWith('/users')} ? ' active' : '')">
                                 <i class="nav-icon bi bi-person"></i><p>Users</p>
@@ -73,43 +79,66 @@
                         <li class="nav-item">
                             <a th:href="@{/appointments}"
                                class="nav-link"
-                               th:classappend="${currentUri.startsWith('/appointment/') } ? ' active'">
+                               th:classappend="${currentUri.startsWith('/appointment') } ? ' active'">
                                 <i class="nav-icon bi bi-calendar-check"></i><p>Appointment</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a th:href="@{/patientvisits}"
                                class="nav-link"
-                               th:classappend="${currentUri.startsWith('/patientvisits/') } ? ' active'">
+                               th:classappend="${currentUri.startsWith('/patientvisits') } ? ' active'">
                                 <i class="nav-icon bi bi-calendar-check"></i><p>Patient Visit</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a th:href="@{/patientcondition}"
+                            <a th:href="@{/patientcondition/consult}"
                                class="nav-link"
-                               th:classappend="${currentUri.startsWith('/patientcondition/') } ? ' active'">
-                                <i class="nav-icon bi bi-calendar-check"></i><p>Patient Diagnose</p>
+                               th:classappend="${currentUri.startsWith('/patientcondition/consult') } ? ' active'">
+                                <i class="nav-icon bi bi-calendar-check"></i><p>Patient Consultation</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/patientcondition/diagnosedlist}"
+                               class="nav-link"
+                               th:classappend="${currentUri.startsWith('/patientcondition/diagnosedlist') } ? ' active'">
+                                <i class="nav-icon bi bi-calendar-check"></i><p>Diagnosed List</p>
                             </a>
                         </li>
                     </ul>
                 </li>
                 <!-- Patient Menu -->
                 <li class="nav-item"
-                    th:classappend="${currentUri.startsWith('/patients')} ? 'menu-open'">
+                    th:classappend="${currentUri.startsWith('/reports')} ? 'menu-open'">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-person"></i><p>Patient<i class="nav-arrow bi bi-chevron-right"></i></p>
+                        <i class="nav-icon bi bi-person"></i><p>Report<i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="#" class="nav-link"
-                               th:classappend="${currentUri.startsWith('/patients/records') } ? ' active'">
-                                <i class="nav-icon bi bi-card-list"></i><p>Records</p>
+                            <a th:href="@{/reports/doctor/details}"
+                               class="nav-link"
+                               th:classappend="${currentUri.startsWith('/reports/doctor') } ? ' active'">
+                                <i class="nav-icon bi bi-card-list"></i><p>Available Doctors</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link"
-                               th:classappend="${currentUri.startsWith('/patients/appointments') } ? ' active'">
-                                <i class="nav-icon bi bi-calendar-check"></i><p>Appointments</p>
+                            <a th:href="@{/reports/averagewaitingtimesp}"
+                               class="nav-link"
+                               th:classappend="${currentUri.startsWith('/reports/averagewaitingtimesp') } ? ' active'">
+                                <i class="nav-icon bi bi-calendar-check"></i><p>Waiting Time</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/reports/averagewaitingtimedr}"
+                               class="nav-link"
+                               th:classappend="${currentUri.startsWith('/reports/averagewaitingtimedr') } ? ' active'">
+                                <i class="nav-icon bi bi-calendar-check"></i><p>Doctor's Waiting Time</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/reports/topreports}"
+                               class="nav-link"
+                               th:classappend="${currentUri.startsWith('/reports/topreports') } ? ' active'">
+                                <i class="nav-icon bi bi-calendar-check"></i><p>Top reports</p>
                             </a>
                         </li>
                     </ul>

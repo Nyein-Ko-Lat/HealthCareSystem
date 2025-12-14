@@ -62,10 +62,10 @@ public class PatientConditionRepository implements IBaseRepository<PatientCondit
     private PatientCondition fillPatientCondition(ResultSet rs) throws SQLException {
         PatientCondition patientCondition = new PatientCondition();
 
-        patientCondition.setConditionID(rs.getLong("PatientCondition ID"));
+        patientCondition.setConditionID(rs.getLong("Condition ID"));
         patientCondition.setPatient(new PatientRepository(jdbc).findById(rs.getLong("Patient ID")));
         patientCondition.setDoctor(new DoctorRepository(jdbc).findById(rs.getLong("Doctor ID")));
-        patientCondition.setPatientVisit(new PatientVisitRepository(jdbc).findById(rs.getLong("PatientVisit ID")));
+        patientCondition.setPatientVisit(new PatientVisitRepository(jdbc).findById(rs.getLong("Visit ID")));
         patientCondition.setDiagnosedDate(rs.getTimestamp("Diagnosed Date").toLocalDateTime());
         patientCondition.setConditionName(rs.getString("Condition Name"));
         patientCondition.setDoctorNote(rs.getString("Note"));

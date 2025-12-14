@@ -18,14 +18,136 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box text-bg-primary">
                         <div class="inner">
-                            <h3>150</h3>
-                            <p>New Orders</p>
+                            <h3 id="cardDocCount">0</h3>
+                            <p>Total Doctors</p>
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box text-bg-primary">
+                        <div class="inner">
+                            <h3 id="cardTodayDrCount">0</h3>
+                            <p>Total Available doctors</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box text-bg-primary">
+                        <div class="inner">
+                            <h3 id="cardTodayAppointment">0</h3>
+                            <p>Total Appointments today</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-8">
+                <div class="card-header">
+                    <h3 class="card-title">Dr by Specialty click
+                        <a th:href="@{/reports/doctor/details}">here</a> for more details
+                    </h3>
+                </div>
+                <div class="container-fluid" id="availabledrdetails">
+
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 </body>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadavailabledoc();
+            loadappointment();
+            createAvailabledrrows();
+        });
+        function loadavailabledoc() {
+            //Total doctor Count
+            fetch(`/api/doctors/getcount`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No doctors in the clinic create one!!!`);
+                    }
+                    return response.json();
+                })
+                .then(drCount => {
+                    document.getElementById('cardDocCount').innerText = drCount;
+                })
+                .catch(error => {
+                    alert("Could not load dashboard data. " + error.message);
+            });
+            //Total doctor Count
+            fetch(`/api/doctors/getavailabledoctors`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No doctors today.`);
+                    }
+                    return response.json();
+                })
+                .then(drCount => {
+                    document.getElementById('cardTodayDrCount').innerText = drCount.length;
+                })
+                .catch(error => {
+                    alert("Could not load dashboard data. " + error.message);
+            });
+            //Speciality doctor counts
+            let rowcount = 0;
+            fetch(`/api/doctors/getscheduleddocspecialitycount`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No doctors found`);
+                    }
+                    return response.json();
+                })
+                .then(drCount => {
+                    let innerhtmlText ="";
+                    Object.entries(drCount).forEach(([speciality, count]) => {
+                        if (rowcount % 4 == 0) {
+                            if (rowcount > 0) {
+                                innerhtmlText += '</div>';
+                            }
+                            innerhtmlText += '<div class="row">';
+                        }
+                        innerhtmlText += '<div class="col-lg-3 col-6">';
+                        innerhtmlText += '    <div class="small-box text-bg-primary">';
+                        innerhtmlText += '        <div class="inner">';
+                        innerhtmlText += '            <h3>'+count+'</h3>';
+                        innerhtmlText += '            <p>'+speciality +' Doctors</p>';
+                        innerhtmlText += '        </div>';
+                        innerhtmlText += '    </div>';
+                        innerhtmlText += '</div>';
+                        rowcount++;
+                    });
+                    document.getElementById('availabledrdetails').innerHTML = innerhtmlText;
+                })
+                .catch(error => {
+                    alert("Could not load dashboard data. " + error.message);
+                });
+        }
+
+        function loadappointment() {
+            //Total doctor Count
+            fetch(`/api/patients/getAppointmentcount`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No Appointment today`);
+                    }
+                    return response.json();
+                })
+                .then(appCount => {
+                    document.getElementById('cardTodayAppointment').innerText = appCount;
+                })
+                .catch(error => {
+                    alert("Could not load dashboard data. " + error.message);
+                });
+        }
+        function createAvailabledrrows(){
+
+        }
+    </script>
+</th:block>
+
 </html>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DoctorService implements IBaseService<Doctor, Long> {
@@ -43,4 +44,8 @@ public class DoctorService implements IBaseService<Doctor, Long> {
     }
 
     public List<Doctor> findBySpecialityId(String speciality) {return doctorRepository.findBySpecialityId(speciality);    }
+
+    public Map<List<String>, Integer> getTopDoctors(Integer topLimit) {
+        return doctorRepository.getTopDoctors(topLimit);
+    }
 }

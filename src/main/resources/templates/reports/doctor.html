@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <h3>Available Doctors</h3>
+        </div>
+    </div>
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-6">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Specialty</th>
+                            <th>Phone No.</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                        </tr>
+                        </thead>
+                        <tbody id="availabledoctor">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadavailabledoc();
+        });
+        function loadavailabledoc() {
+            //Doctors by Speciality
+            let rowcount = 1;
+            fetch(`/api/doctors/getavailabledoctors`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No doctors found`);
+                    }
+                    return response.json();
+                })
+                .then(drCount => {
+                    document.getElementById('availabledoctor').innerHTML ="";
+                    drCount.forEach(drsch=>{
+                        document.getElementById('availabledoctor').innerHTML += createschrow(rowcount,
+                            drsch.doctor.firstName +" " + drsch.doctor.lastName,
+                            drsch.doctor.specialty,
+                            drsch.doctor.phoneNumber,
+                            drsch.startTime,
+                            drsch.endTime);
+                        rowcount++;
+                    });
+                })
+                .catch(error => {
+                    alert("Could not load dashboard data. " + error.message);
+            });
+        }
+        function createschrow(rowno,drName,drSpecialty,drPhNo,schStartTime,schEndTime){
+            let innerHtml="<tr>";
+            innerHtml += "<td>"+ rowno +"</td>";
+            innerHtml += "<td>"+ drName +"</td>";
+            innerHtml += "<td>"+ drSpecialty +"</th>";
+            innerHtml += "<td>"+ drPhNo +"</th>";
+            innerHtml += "<td>"+ schStartTime +"</th>";
+            innerHtml += "<td>"+ schEndTime +"</th>";
+            innerHtml += "</tr>";
+            return innerHtml;
+        }
+
+    </script>
+</th:block>
+
+</html>

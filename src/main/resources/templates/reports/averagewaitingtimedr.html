@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <h3>Average Waiting Time</h3>
+        </div>
+    </div>
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-6">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Doctor</th>
+                            <th>Specialty</th>
+                            <th>Average Waiting Time</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tblWaitingTime">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadavailabledoc();
+        });
+        function loadavailabledoc() {
+            //Waiting Time
+            let rowcount = 1;
+            fetch(`/api/doctors/getavgwaitingbydoctor`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No doctors found`);
+                    }
+                    return response.json();
+                })
+                .then(drCount => {
+                    document.getElementById('tblWaitingTime').innerHTML ="";
+                    Object.entries(drCount).forEach(([speciality, count]) => {
+                        const [val1, val2] = speciality.split(',');
+                        document.getElementById('tblWaitingTime').innerHTML += createschrow(rowcount,val1.replace('[',''),val2.replace(']',''),count);
+                        rowcount++;
+                    });
+                })
+                .catch(error => {
+                    alert("Could not load dashboard data. " + error.message);
+            });
+        }
+        function createschrow(rowno,Doctor,drSpecialty,averageTime){
+            let innerHtml="<tr>";
+            innerHtml += "<td>"+ rowno +"</td>";
+            innerHtml += "<td>"+ Doctor +"</td>";
+            innerHtml += "<td>"+ drSpecialty +"</th>";
+            innerHtml += "<td>"+ averageTime +" Minute(s)</th>";
+            innerHtml += "</tr>";
+            return innerHtml;
+        }
+
+    </script>
+</th:block>
+
+</html>

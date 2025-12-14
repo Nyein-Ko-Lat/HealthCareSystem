@@ -35,11 +35,17 @@ public class PatientConditionController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/consult")
     public String list(Model model) {
         List<PatientVisit> pVisits = patientVisitService.findApprovedPatientVisitsByDate(LocalDate.now());
         model.addAttribute("pVisits", pVisits);
         return "patientcondition/index";
+    }
+    @GetMapping("/diagnosedlist")
+    public String Diagnoselist(Model model) {
+        List<PatientCondition> pConditions = service.findAll();
+        model.addAttribute("pConditions", pConditions);
+        return "patientcondition/diagnosedlist";
     }
 
     @GetMapping("/form")

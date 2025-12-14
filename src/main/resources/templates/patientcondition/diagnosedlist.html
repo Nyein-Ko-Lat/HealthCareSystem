@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Users</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6"><h3 class="mb-0">Patient Diagnosed</h3></div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="#">Patient Diagnosed</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Diagnosed List</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card mb-8">
+                            <div class="card-header">
+                                <h3 class="card-title">Diagnosed List</h3>
+                            </div>
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Patient</th>
+                                            <th>Doctor</th>
+                                            <th>Date</th>
+                                            <th>Treatment</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="pvst, stat  : ${pConditions}">
+                                            <td th:text="${stat.index + 1}"></td>
+                                            <td th:text="${pvst.patient.getFirstName() + ' ' + pvst.patient.getLastName()}"></td>
+                                            <td th:text="${pvst.doctor.getFirstName() + ' ' + pvst.doctor.getLastName()}"></td>
+                                            <td th:text="${pvst.diagnosedDate.toString().replace('T',' ')}"></td>
+                                            <td th:text="${pvst.conditionName}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Body-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

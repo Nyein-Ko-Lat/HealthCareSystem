@@ -2,11 +2,15 @@ package edu.gisma.gh1043541.healthcaresystem.repository;
 
 import edu.gisma.gh1043541.healthcaresystem.entity.Doctor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class DoctorRepository implements IBaseRepository<Doctor, Long> {
@@ -63,6 +67,29 @@ public class DoctorRepository implements IBaseRepository<Doctor, Long> {
         return jdbc.query(sql, new Object[]{speciality}, (rs, rowNum) -> fillDoctor(rs));
     }
 
+    public Map<List<String>, Integer> getTopDoctors(Integer topLimit) {
+        if(topLimit == null || topLimit==0){
+            topLimit = 5;
+        }
+        String sql = "CALL sp_get_top_doctor(?)";
+        Map<List<String>,Integer> doctorSchedules = new HashMap<>();
+        doctorSchedules =jdbc.query(sql, new Object[]{topLimit}, new ResultSetExtractor<Map<List<String>, Integer>>() {
+            @Override
+            public Map<List<String>, Integer> extractData(ResultSet rs) throws SQLException {
+                Map<List<String>, Integer> results = new HashMap<>();
+                while (rs.next()) {
+                    List<String> key = new ArrayList<>();
+                    key.add(rs.getString("Doctor"));
+                    key.add(rs.getString("Specialty"));
+                    Integer value = rs.getInt("PatientCount");
+                    results.put(key, value);
+                }
+                return results;
+            }
+        });
+        return doctorSchedules;
+    }
+
 
     private Doctor fillDoctor(ResultSet rs) throws SQLException {
         Doctor doctor = new Doctor();
@@ -81,4 +108,5 @@ public class DoctorRepository implements IBaseRepository<Doctor, Long> {
 
         return doctor;
     }
+
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>User Form</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0">Reports</h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Summary</a></li>
+                        <li class="breadcrumb-item active">Top activities reports</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-8">
+                    <div class="card-header">
+                        <h3 class="align-items-center card-title"><h3 class="card-title">Top 5 Doctors of the Month <p th:text="${#dates.format(#dates.createNow(), 'MMMM')}"></p></h3></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row col-md-12">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered mt-3">
+                                            <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Doctor</th>
+                                                <th>Specialty</th>
+                                                <th>Patient Diagnosed</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tblTop5Doctor">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadavailabledoc();
+        });
+        function loadavailabledoc() {
+            //Waiting Time
+            let rowcount = 1;
+            fetch(`/api/doctors/gettopdoctors`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No doctors found`);
+                    }
+                    return response.json();
+                })
+                .then(drCount => {
+                    document.getElementById('tblTop5Doctor').innerHTML ="";
+                    Object.entries(drCount).forEach(([doctor, count]) => {
+
+                        const [val1, val2] = doctor.split(',');
+                        document.getElementById('tblTop5Doctor').innerHTML += createtopdrow(rowcount,val1.replace('[',''),val2.replace(']',''),count);
+                        rowcount++;
+                    });
+                })
+                .catch(error => {
+                    alert("Could not load dashboard data. " + error.message);
+            });
+        }
+        function createtopdrow(rowno,Doctor,Specialty, patients){
+            let innerHtml="<tr>";
+            innerHtml += "<td>"+ rowno +"</td>";
+            innerHtml += "<td>"+ Doctor +"</td>";
+            innerHtml += "<td>"+ Specialty +"</td>";
+            innerHtml += "<td>"+ patients +" Patients</th>";
+            innerHtml += "</tr>";
+            return innerHtml;
+        }
+
+    </script>
+</th:block>
+
+</html>
