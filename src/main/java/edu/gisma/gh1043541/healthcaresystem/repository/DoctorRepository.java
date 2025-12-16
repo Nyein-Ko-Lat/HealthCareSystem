@@ -22,20 +22,21 @@ public class DoctorRepository implements IBaseRepository<Doctor, Long> {
     }
 
     @Override
-    public Doctor save(Doctor doctor) {
+    public Long save(Doctor doctor) {
         String sql = "CALL sp_save_doctor(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbc.update(sql,
-                doctor.getDoctorID() != null ? doctor.getDoctorID() : 0,
-                doctor.getFirstName(),
-                doctor.getLastName(),
-                doctor.getSpecialty(),
-                doctor.getPhoneNumber(),
-                doctor.getEmail(),
-                doctor.getStatusCode(),
-                doctor.getCreatedBy(),
-                doctor.getUpdatedBy()
+        return jdbc.queryForObject(sql, new Object[]{
+                        doctor.getDoctorID() != null ? doctor.getDoctorID() : 0,
+                        doctor.getFirstName(),
+                        doctor.getLastName(),
+                        doctor.getSpecialty(),
+                        doctor.getPhoneNumber(),
+                        doctor.getEmail(),
+                        doctor.getStatusCode(),
+                        doctor.getCreatedBy(),
+                        doctor.getUpdatedBy()
+                },
+                Long.class
         );
-        return doctor;
     }
 
     @Override

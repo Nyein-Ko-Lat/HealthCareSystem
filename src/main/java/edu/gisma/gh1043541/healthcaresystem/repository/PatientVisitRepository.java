@@ -20,20 +20,21 @@ public class PatientVisitRepository implements IBaseRepository<PatientVisit, Lon
     }
 
     @Override
-    public PatientVisit save(PatientVisit patientVisit) {
+    public Long save(PatientVisit patientVisit) {
         String sql = "CALL sp_save_patient_visit(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbc.update(sql,
-                patientVisit.getVisitID() != null ? patientVisit.getVisitID() : 0,
-                patientVisit.getPatient().getPatientID(),
-                patientVisit.getDoctor().getDoctorID(),
-                patientVisit.getAppointment().getAppointmentID(),
-                patientVisit.getPatientVisitDate(),
-                patientVisit.getVisitReason(),
-                patientVisit.getStatusCode(),
-                patientVisit.getCreatedBy(),
-                patientVisit.getUpdatedBy()
+        return jdbc.queryForObject(sql, new Object[]{
+                        patientVisit.getVisitID() != null ? patientVisit.getVisitID() : 0,
+                        patientVisit.getPatient().getPatientID(),
+                        patientVisit.getDoctor().getDoctorID(),
+                        patientVisit.getAppointment().getAppointmentID(),
+                        patientVisit.getPatientVisitDate(),
+                        patientVisit.getVisitReason(),
+                        patientVisit.getStatusCode(),
+                        patientVisit.getCreatedBy(),
+                        patientVisit.getUpdatedBy()
+                },
+                Long.class
         );
-        return patientVisit;
     }
 
     @Override

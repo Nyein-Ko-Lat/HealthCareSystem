@@ -18,20 +18,20 @@ public class PatientRepository implements IBaseRepository<Patient, Long> {
     }
 
     @Override
-    public Patient save(Patient patient) {
+    public Long save(Patient patient) {
         String sql = "CALL sp_save_patient(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbc.update(sql,
-                patient.getPatientID() != null ? patient.getPatientID() : 0,
-                patient.getFirstName(),
-                patient.getLastName(),
-                patient.getDateOfBirth(),
-                patient.getGender(),
-                patient.getBloodType(),
-                patient.getStatusCode(),
-                patient.getCreatedBy(),
-                patient.getUpdatedBy()
-        );
-        return patient;
+        return jdbc.queryForObject(sql,new Object[]{
+                        patient.getPatientID() != null ? patient.getPatientID() : 0,
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getDateOfBirth(),
+                        patient.getGender(),
+                        patient.getBloodType(),
+                        patient.getStatusCode(),
+                        patient.getCreatedBy(),
+                        patient.getUpdatedBy()
+                },
+                Long.class);
     }
 
     @Override

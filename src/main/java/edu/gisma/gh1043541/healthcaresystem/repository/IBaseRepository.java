@@ -5,7 +5,7 @@ import edu.gisma.gh1043541.healthcaresystem.entity.Doctor;
 import java.util.List;
 
 public interface IBaseRepository<T, ID> {
-    T save(T entity);
+    Long save(T entity);
     T findById(ID id);
 
     void delete(ID doctorID);

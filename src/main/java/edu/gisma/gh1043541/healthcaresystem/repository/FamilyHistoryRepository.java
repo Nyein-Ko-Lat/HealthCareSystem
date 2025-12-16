@@ -18,18 +18,19 @@ public class FamilyHistoryRepository implements IBaseRepository<FamilyHistory, L
     }
 
     @Override
-    public FamilyHistory save(FamilyHistory fh) {
+    public Long save(FamilyHistory fh) {
         String sql = "CALL sp_save_family_history(?, ?, ?, ?, ?, ?, ?)";
-        jdbc.update(sql,
-                fh.getFamilyHistoryID() != null ? fh.getFamilyHistoryID() : 0,
-                fh.getPatient().getPatientID(),
-                fh.getMedicalCondition(),
-                fh.getRelationship(),
-                fh.getStatusCode(),
-                fh.getCreatedBy(),
-                fh.getUpdatedBy()
+        return jdbc.queryForObject(sql, new Object[]{
+                        fh.getFamilyHistoryID() != null ? fh.getFamilyHistoryID() : 0,
+                        fh.getPatient().getPatientID(),
+                        fh.getMedicalCondition(),
+                        fh.getRelationship(),
+                        fh.getStatusCode(),
+                        fh.getCreatedBy(),
+                        fh.getUpdatedBy()
+                },
+                Long.class
         );
-        return fh;
     }
 
 

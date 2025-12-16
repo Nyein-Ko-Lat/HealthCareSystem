@@ -28,7 +28,14 @@ public class AppointmentService implements IBaseService<Appointment, Long> {
 
     @Override
     public Appointment save(Appointment drSch) {
-        return appointmentRepository.save(drSch);
+        try{
+            appointmentRepository.save(drSch);
+        }catch (Exception ex){
+
+        }
+        finally {
+            return drSch;
+        }
     }
 
     @Override

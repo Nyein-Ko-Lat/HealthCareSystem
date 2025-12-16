@@ -26,27 +26,27 @@ public class DoctorScheduleRepository implements IBaseRepository<DoctorSchedule,
     }
 
     @Override
-    public DoctorSchedule save(DoctorSchedule doctorSchedule) {
+    public Long save(DoctorSchedule doctorSchedule) {
         String sql = "CALL sp_save_doctor_schedule(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        jdbc.update(sql,
-                doctorSchedule.getDoctorScheduleID() != null ? doctorSchedule.getDoctorScheduleID() : 0,
-                doctorSchedule.getDoctor().getDoctorID(),
-                doctorSchedule.getIsMon(),
-                doctorSchedule.getIsTue(),
-                doctorSchedule.getIsWed(),
-                doctorSchedule.getIsThu(),
-                doctorSchedule.getIsFri(),
-                doctorSchedule.getIsSat(),
-                doctorSchedule.getIsSun(),
-                doctorSchedule.getStartTime(),
-                doctorSchedule.getEndTime(),
-                doctorSchedule.getStatusCode(),
-                doctorSchedule.getCreatedBy(),
-                doctorSchedule.getUpdatedBy()
+        return jdbc.queryForObject(sql, new Object[]{
+                        doctorSchedule.getDoctorScheduleID() != null ? doctorSchedule.getDoctorScheduleID() : 0,
+                        doctorSchedule.getDoctor().getDoctorID(),
+                        doctorSchedule.getIsMon(),
+                        doctorSchedule.getIsTue(),
+                        doctorSchedule.getIsWed(),
+                        doctorSchedule.getIsThu(),
+                        doctorSchedule.getIsFri(),
+                        doctorSchedule.getIsSat(),
+                        doctorSchedule.getIsSun(),
+                        doctorSchedule.getStartTime(),
+                        doctorSchedule.getEndTime(),
+                        doctorSchedule.getStatusCode(),
+                        doctorSchedule.getCreatedBy(),
+                        doctorSchedule.getUpdatedBy()
+                },
+                Long.class
         );
-
-        return doctorSchedule;
     }
 
     @Override

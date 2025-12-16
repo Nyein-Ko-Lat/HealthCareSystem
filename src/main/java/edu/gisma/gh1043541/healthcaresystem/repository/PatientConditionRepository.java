@@ -18,21 +18,22 @@ public class PatientConditionRepository implements IBaseRepository<PatientCondit
     }
 
     @Override
-    public PatientCondition save(PatientCondition patientCondition) {
+    public Long save(PatientCondition patientCondition) {
         String sql = "CALL sp_save_patient_condition(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbc.update(sql,
-                patientCondition.getConditionID() != null ? patientCondition.getConditionID() : 0,
-                patientCondition.getPatient().getPatientID(),
-                patientCondition.getDoctor().getDoctorID(),
-                patientCondition.getPatientVisit().getVisitID(),
-                patientCondition.getDiagnosedDate(),
-                patientCondition.getConditionName(),
-                patientCondition.getDoctorNote(),
-                patientCondition.getStatusCode(),
-                patientCondition.getCreatedBy(),
-                patientCondition.getUpdatedBy()
+        return jdbc.queryForObject(sql, new Object[]{
+                        patientCondition.getConditionID() != null ? patientCondition.getConditionID() : 0,
+                        patientCondition.getPatient().getPatientID(),
+                        patientCondition.getDoctor().getDoctorID(),
+                        patientCondition.getPatientVisit().getVisitID(),
+                        patientCondition.getDiagnosedDate(),
+                        patientCondition.getConditionName(),
+                        patientCondition.getDoctorNote(),
+                        patientCondition.getStatusCode(),
+                        patientCondition.getCreatedBy(),
+                        patientCondition.getUpdatedBy()
+                },
+                Long.class
         );
-        return patientCondition;
     }
 
     @Override

@@ -19,9 +19,9 @@ public class AppointmentRepository implements IBaseRepository<Appointment, Long>
     }
 
     @Override
-    public Appointment save(Appointment appointment) {
+    public Long save(Appointment appointment) {
         String sql = "CALL sp_save_appointment(?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbc.update(sql,
+        return jdbc.queryForObject(sql, new Object[]{
                 appointment.getAppointmentID() != null ? appointment.getAppointmentID() : 0,
                 appointment.getPatient().getPatientID(),
                 appointment.getDoctor().getDoctorID(),
@@ -30,8 +30,9 @@ public class AppointmentRepository implements IBaseRepository<Appointment, Long>
                 appointment.getStatusCode(),
                 appointment.getCreatedBy(),
                 appointment.getUpdatedBy()
+                },
+                Long.class
         );
-        return appointment;
     }
 
     @Override

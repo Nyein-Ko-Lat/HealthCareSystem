@@ -23,15 +23,15 @@ public class PatientService implements IBaseService<Patient, Long> {
     @Override
     public Patient save(Patient patient) {
 
-        Patient saved = patientRepo.save(patient);
+        Long savedID = patientRepo.save(patient);
 
         for (FamilyHistory fh : patient.getFamilyHistory()) {
-            fh.setPatient(patientRepo.findById(saved.getPatientID()));
-            fh.setCreatedBy(saved.getCreatedBy());
-            fh.setUpdatedBy(saved.getUpdatedBy());
+            fh.setPatient(patientRepo.findById(savedID));
+            fh.setCreatedBy(patient.getCreatedBy());
+            fh.setUpdatedBy(patient.getUpdatedBy());
             fhRepo.save(fh);
         }
-        return saved;
+        return patient;
     }
 
     @Override

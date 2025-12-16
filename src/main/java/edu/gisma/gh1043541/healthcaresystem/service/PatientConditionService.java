@@ -37,7 +37,13 @@ public class PatientConditionService implements IBaseService<PatientCondition, L
             pVst.setDoctor(doctorRepository.findById(patientVisit.getDoctor().getDoctorID()));
         }
         pVst.setStatusCode("USE");      //Default for Patient Visit
-        return patientConditionRepository.save(pVst);
+        try {
+            patientConditionRepository.save(pVst);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }finally {
+            return pVst;
+        }
     }
 
     @Override

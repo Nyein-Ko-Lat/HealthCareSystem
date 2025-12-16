@@ -20,7 +20,14 @@ public class DoctorService implements IBaseService<Doctor, Long> {
 
     @Override
     public Doctor save(Doctor dr) {
-        return doctorRepository.save(dr);
+        try {
+            doctorRepository.save(dr);
+        }catch (Exception ex){
+
+        }
+        finally {
+            return dr;
+        }
     }
 
     @Override

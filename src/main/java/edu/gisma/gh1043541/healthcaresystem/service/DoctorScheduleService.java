@@ -23,7 +23,13 @@ public class DoctorScheduleService implements IBaseService<DoctorSchedule, Long>
 
     @Override
     public DoctorSchedule save(DoctorSchedule drSch) {
-        return doctorScheduleRepository.save(drSch);
+        try {
+            doctorScheduleRepository.save(drSch);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }finally {
+            return  drSch;
+        }
     }
 
     @Override

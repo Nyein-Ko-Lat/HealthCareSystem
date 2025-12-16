@@ -18,7 +18,13 @@ public class FamilyHistoryService implements IBaseService<FamilyHistory, Long> {
 
     @Override
     public FamilyHistory save(FamilyHistory fh) {
-        return familyHistoryRepository.save(fh);
+        try{
+            familyHistoryRepository.save(fh);
+        }catch (Exception ex){
+
+        }finally {
+            return fh;
+        }
     }
 
     @Override

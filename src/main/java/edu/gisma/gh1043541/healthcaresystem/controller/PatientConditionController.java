@@ -77,7 +77,7 @@ public class PatientConditionController {
         patientcondition.setCreatedBy(userId);
 
         service.save(patientcondition);
-        return "redirect:/patientcondition";
+        return "redirect:/patientcondition/diagnosedlist";
     }
 
     @GetMapping("/delete")

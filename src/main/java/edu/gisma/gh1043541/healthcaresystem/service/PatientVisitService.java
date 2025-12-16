@@ -28,14 +28,22 @@ public class PatientVisitService implements IBaseService<PatientVisit, Long> {
 
     @Override
     public PatientVisit save(PatientVisit pVst) {
-        if(pVst.getAppointment()!=null){
+        if(pVst.getAppointment().getAppointmentID()!=null){
             Appointment appointment = appointmentRepository.findById(pVst.getAppointment().getAppointmentID());
             pVst.setAppointment(appointment);
             pVst.setPatient(patientRepository.findById(appointment.getPatient().getPatientID()));
             pVst.setDoctor(doctorRepository.findById(appointment.getDoctor().getDoctorID()));
         }
         pVst.setStatusCode("APR");      //Default for Patient Visit
-        return patientVisitRepository.save(pVst);
+        try{
+            patientVisitRepository.save(pVst);
+        }
+        catch (Exception ex){
+
+        }
+        finally {
+            return  pVst;
+        }
     }
 
     @Override
