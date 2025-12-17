@@ -52,6 +52,7 @@ public class AppointmentController {
         //Check whether available time slot and book before 1 hours
         if(!availableSlot || appointment.getAppointmentDate().isBefore(LocalDateTime.now().plusHours(1L))) {
             model.addAttribute("error", "Selected time slot is not available!");
+            model.addAttribute("drSpecialist", StaticDataService.getDrSpecialist());
             model.addAttribute("appointment", appointment);
             model.addAttribute("patients", patientService.findAll());
             model.addAttribute("doctors", doctorService.findAll());

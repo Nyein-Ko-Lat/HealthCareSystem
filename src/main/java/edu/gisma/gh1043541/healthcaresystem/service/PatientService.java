@@ -25,6 +25,7 @@ public class PatientService implements IBaseService<Patient, Long> {
 
         Long savedID = patientRepo.save(patient);
 
+        if(patient.getFamilyHistory().isEmpty()) return patient;
         for (FamilyHistory fh : patient.getFamilyHistory()) {
             fh.setPatient(patientRepo.findById(savedID));
             fh.setCreatedBy(patient.getCreatedBy());

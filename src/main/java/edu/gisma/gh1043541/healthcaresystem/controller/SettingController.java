@@ -116,10 +116,14 @@ public class SettingController {
 
         // Parse JSON of family history
         ObjectMapper mapper = new ObjectMapper();
-        List<Map<String, Object>> rawList = mapper.readValue(
-                familyHistoryJson,
-                new TypeReference<List<Map<String, Object>>>() {}
-        );
+        List<Map<String, Object>> rawList = null;
+        if(!familyHistoryJson.isEmpty()) {
+            rawList = mapper.readValue(
+                    familyHistoryJson,
+                    new TypeReference<List<Map<String, Object>>>() {
+                    }
+            );
+        }
 
         if(patient.getPatientID() == null){
             patient.setCreatedBy(userId);
@@ -127,20 +131,22 @@ public class SettingController {
         patient.setUpdatedBy(userId);
         List<FamilyHistory> histories = new ArrayList<>();
 
-        for (Map<String, Object> map : rawList) {
-            FamilyHistory fh = new FamilyHistory();
+        if(rawList != null){
+            for (Map<String, Object> map : rawList) {
+                FamilyHistory fh = new FamilyHistory();
 
-            fh.setFamilyHistoryID((String)map.get("familyHistoryID") != ""? Long.parseLong((String) map.get("familyHistoryID")):null);
-            fh.setRelationship((String) map.getOrDefault("relationship", ""));
-            fh.setMedicalCondition((String) map.getOrDefault("medicalCondition", ""));
-            fh.setPatient(patient);
-            fh.setUpdatedBy(userId);
-            if(fh.getFamilyHistoryID() == null){
-                fh.setCreatedBy(userId);
+                fh.setFamilyHistoryID((String)map.get("familyHistoryID") != ""? Long.parseLong((String) map.get("familyHistoryID")):null);
+                fh.setRelationship((String) map.getOrDefault("relationship", ""));
+                fh.setMedicalCondition((String) map.getOrDefault("medicalCondition", ""));
+                fh.setPatient(patient);
+                fh.setUpdatedBy(userId);
+                if(fh.getFamilyHistoryID() == null){
+                    fh.setCreatedBy(userId);
+                }
+                histories.add(fh);
             }
-
-            histories.add(fh);
         }
+
         patient.setFamilyHistory(histories);
         // Save patient first
         patientService.save(patient);

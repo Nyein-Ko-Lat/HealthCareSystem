@@ -68,6 +68,23 @@ public class PatientConditionController {
     @PostMapping("/save")
     public String save(@ModelAttribute PatientCondition patientcondition, Model model) {
 
+        if(patientcondition.getPatientVisit().getVisitID() == null) {
+            model.addAttribute("error", "Please make a visit first before diagnosed");
+            model.addAttribute("drSpecialist", StaticDataService.getDrSpecialist());
+            PatientVisit a = new PatientVisit();
+
+            PatientCondition dig = new PatientCondition();
+            dig.setPatientVisit(a);
+            dig.setPatient(a.getPatient());
+            dig.setDoctor(a.getDoctor());
+            dig.setDiagnosedDate(LocalDateTime.now());
+            model.addAttribute("patientcondition", dig);
+            model.addAttribute("patients", patientService.findAll());
+            model.addAttribute("doctors", doctorService.findAll());
+            model.addAttribute("conditions", StaticDataService.getPatientCondition());
+            return "patientcondition/form"; // Back to form
+        }
+
         String username = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
