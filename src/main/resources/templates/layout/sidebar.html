@@ -11,7 +11,7 @@
                 <!-- Admin Menu -->
                 <li class="nav-item"
                     th:classappend="${currentUri.startsWith('/users') or currentUri.startsWith('/roles') or currentUri.startsWith('/settings')} ? 'menu-open'">
-                    <a href="#" class="nav-link"><i class="nav-icon bi bi-gear"></i><p>Admin<i class="nav-arrow bi bi-chevron-right"></i></p></a>
+                    <a href="#" class="nav-link"><i class="nav-icon bi bi-gear"></i><p>Settings<i class="nav-arrow bi bi-chevron-right"></i></p></a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a th:href="@{/}"
