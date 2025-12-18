@@ -27,7 +27,7 @@ Run Database Scripts (IMPORTANT ORDER)
 _**Script Location : https://github.com/Nyein-Ko-Lat/HealthCareSystem/tree/master/DatabaseFiles**_
 Execute the following SQL files in order:
 
-01_db_schema.sql : **Creates all tables**
+01_db_schema.sql : **Creates all tables + insert required Roles, Status Code, and Admin User**
 
 Defines primary keys, foreign keys, constraints, and relationships
 
