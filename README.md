@@ -1,7 +1,8 @@
-## Clinic Management System
+## Health Care Appointment & Patient Visit Management System
 ## Overview
-This project is a Clinic Management System designed to demonstrate core healthcare workflows including user management, doctor scheduling, patient records, appointments, visits, consultations, and reporting dashboards.
-The system emphasizes data integrity, real-world constraints, and clear relational design.
+This project is a Health Care Appointment & Patient Visit Management System designed to demonstrate core healthcare workflows including user management, doctor scheduling, patient records, appointments, visits, consultations, and reporting dashboards.
+The system emphasizes data integrity, operational constraints, and clear relational design.
+
 ## Default Login Credentials
 
 ### Admin User
